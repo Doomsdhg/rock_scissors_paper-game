@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "has-duplicates": "^1.0.0",
+    "random": "^3.0.6",
+    "secure-random": "^1.1.2",
+    "table": "^6.7.5"
+  }
+}
