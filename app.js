@@ -21,12 +21,12 @@ class Main {
         this.key = hashAndKey.generateKey();
         this.hash = hashAndKey.generateHash();
         console.log('\nHMAC: ' + hashAndKey.hashedTurn);
-        const rules = new Rules(this.possibleTurns);
-        rules.generateRules();
-        this.table = new Table(rules.rules, this.possibleTurns);   
-        this.table.generateTable();
+        const rulesObject = new Rules(this.possibleTurns);
+        rulesObject.generateRules();
+        const tableObject = new Table(rulesObject.rules, this.possibleTurns);   
+        tableObject.generateTable();
         this.generateMenu();
-        this.fetchUserTurn(this.table);
+        this.fetchUserTurn(tableObject);
     }
 
     generateTurn () {
@@ -47,24 +47,24 @@ class Main {
         this.menu.push('\n0 - exit \n? - help');
     }
 
-    fetchUserTurn (table) {
+    fetchUserTurn (tableObject) {
         readline.question(`Available turns:${this.menu.join('')}\nEnter your turn: `, (input) => {
             this.userTurn = this.possibleTurns[input - 1];
             if (this.userTurn === undefined && !this.possibleInputs.includes(Number(input)) && input !== '?' && input !== '0') {
                 console.log('Invalid input.');
-                this.fetchUserTurn(table);
+                this.fetchUserTurn(tableObject);
                 return null
             } else {
                 if (input === '?') { 
-                    table.showTable();
-                    this.fetchUserTurn(table);
+                    tableObject.showTable();
+                    this.fetchUserTurn(tableObject);
                     return null
                 } else if (input === '0') {
                     process.exit()
                 } else {
                     console.log('Your turn is: ' + this.userTurn);
                     this.userTurnIndex = this.possibleTurns.indexOf(this.userTurn);
-                    const result = table.table[this.userTurnIndex + 1][this.computerTurnIndex + 1];
+                    const result = tableObject.table[this.userTurnIndex + 1][this.computerTurnIndex + 1];
                     console.log(result === 'draw' ? 
                     result + '\n' + 'Computer turn was: ' + this.computerTurn + '\n' + 'secret key: ' + this.key : 
                     'You ' + result + '\n' + 'Computer turn was: ' + this.computerTurn + '\n' + 'secret key: ' + this.key);
@@ -87,9 +87,7 @@ class Main {
             console.log(errorMessage);
             process.exit()
         } 
-        
     }
-
 }
 
 class HashAndKeyGenerator {
@@ -118,7 +116,6 @@ class Rules {
         let centerIndex = Math.floor(this.turns.length / 2);
         let counter = 0;
         this.turns.map((turn, turnIndex, array) => {
-            
             let turnsArray = array.slice();
             let losers = [];
             let winners = [];
@@ -139,9 +136,6 @@ class Rules {
             this.rules.push(turnsArray);  
         })
     }
-
-
-
 }
 
 class Table {
@@ -173,11 +167,10 @@ class Table {
         this.table.unshift(header)
     }
 
-    showTable() {
+    showTable () {
         console.log(table(this.table));
     }
 }
-
 
 let newTurn = new Main(process);
 newTurn.startNewGame();
